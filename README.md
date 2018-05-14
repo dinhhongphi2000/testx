@@ -258,7 +258,21 @@ Predefined keywords are:
 | put                    ||| Puts the arguments in the test context. Access the *var value* in subsequent steps with *{{var name}}*||
 |                        | *var name*    | *var value*     || Yes |
 | current url		 ||| check current url matches with expected regular expression
-|			 | *url*         | *expected regex* || Yes |
+|			 | *url*         | *expected regex* || No |
+| check popup name       ||| Check popup is displayed, it's name have equals expected name||
+|			 | *name*        | "*expected name* || No |
+| close popup            ||| Close popup ||
+|			 |||| No |
+| check attribute equal  ||| Check attribute of element have equal expected value ||
+|			 | locator   | *object key* || No |
+|			 | attribute | *attribute name*  || No |
+|			 | value     | *expected attribute value* || No |
+| click and save text    ||| Click to object and save text of object to context |
+| 			 | *object key* | *key of value in context* || Yes |
+| check matches date     ||| Check if value or attribute of object matches with value of key in context. Only used for checkout-app |
+|			 | *object key* | *key of value in context* || Yes |
+| check matches saved data ||| Check if value or attribute of object matches with value of key in context |
+| 			| *object key* | *key of value in context* || Yes |
 
 ## Additional keyword packages
 | Npm package | Description |
