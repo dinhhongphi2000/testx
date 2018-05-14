@@ -135,3 +135,49 @@ keywords =
       keys = val.replace(/\[\w+\]/g, (match) ->
         protractor.Key[match.substring(1, match.length-1).toUpperCase()])
       browser.actions().sendKeys(keys).perform()
+  'current url' : (args) ->
+    url = browser.getCurrentUrl();
+    expect(url).toMatch args.url
+  #check name of popup name
+  'check popup name' : (args) -> 
+    browser.getAllWindowHandles().then (handles) ->
+        browser.switchTo().window(handles[1]).then () ->
+          browser.getTitle().then (value) ->
+            expect(args.name).toEqual(value)
+  'close popup' : (args) ->
+    browser.getAllWindowHandles().then (handles) ->
+      browser.switchTo().window(handles[1]).then () ->
+        browser.executeScript 'window.close()'
+      browser.switchTo().window(handles[0])
+  'check attribute equal' : (args) ->
+    expect(testx.element(args.locator).getAttribute(args.attribute)).toEqual(args.value)
+  'click and save text' : (args, ctx) ->
+    for key, val of args 
+      set key,null
+      ctx[val] = get(key)
+  # this a below keyword only used by checkout-angular app
+  'check matches date' : (args, ctx) ->
+    for key, val of args
+      ctx[val].then (data) ->
+        date = moment(data,'DD/MM/YYYY')
+        expectDate = date.date() + ' tháng ' + (date.month() + 1).toString()  + ' năm ' + date.year()
+        expect(get key).toMatch expectDate, assertFailedMsg(ctx)
+  # this a above keyword only used by checkout-angular app
+  'check matches saved data' : (args, ctx) ->
+    for key, val of args
+      ctx[val].then (data) ->
+        expect(get key).toMatch data, assertFailedMsg(ctx)
+  'video can play' : (args, ctx) ->
+    key = Object.keys(args)[0]
+    videoSelector = testx.element(key).locator().value
+    browser.executeScript('
+      var video = document.querySelector(arguments[0]);
+      video.play();
+      return video.currentTime;
+    ',videoSelector)
+    browser.sleep(10000)
+    time = browser.executeScript('
+      var video = document.querySelector(arguments[0]);
+      return video.currentTime;
+    ',videoSelector)
+    expect(time).toBeGreaterThan(0)
